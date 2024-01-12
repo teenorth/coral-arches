@@ -3,11 +3,12 @@ define([
   'knockout',
   'knockout-mapping',
   'arches',
+  'uuid',
   'templates/views/components/plugins/workflow-builder-editor.htm',
   'viewmodels/workflow-builder-step',
   'viewmodels/workflow-builder-config',
   'plugins/knockout-select2'
-], function ($, ko, koMapping, arches, pageTemplate, WorkflowBuilderStep) {
+], function ($, ko, koMapping, arches, uuid, pageTemplate, WorkflowBuilderStep) {
   const pageViewModel = function (params) {
     this.workflowName = ko.observable('New Workflow');
     this.workflowSteps = ko.observableArray();
@@ -25,7 +26,9 @@ define([
       const step = new WorkflowBuilderStep({
         title: title,
         cards: stepData?.layoutSections[0].componentConfigs,
-        graphId: this.graphId()
+        graphId: this.graphId(),
+        stepId: uuid.generate(),
+        parentWorkflow: this
       });
       this.workflowSteps().push(step);
       this.workflowSteps.valueHasMutated();
@@ -43,6 +46,17 @@ define([
     this.switchStep = (stepIdx) => {
       this.setConfigActive(false);
       this.activeStep(this.workflowSteps()[stepIdx]);
+    };
+
+    this.removeStepFromWorkflow = (stepId) => {
+      this.workflowSteps.remove((step) => {
+        return step.stepId === stepId;
+      });
+      if (this.workflowSteps().length) {
+        this.activeStep(this.workflowSteps()[0]);
+      } else {
+        this.setConfigActive(true);
+      }
     };
 
     this.setConfigActive = (active) => {
@@ -145,14 +159,16 @@ define([
           arches.urls.root + `workflow-builder/plugins?slug=${this.workflowSlug()}`
         );
         this.workflowPlugin(workflow);
+        this.loadSteps(this.workflowPlugin()?.config.stepData);
+        this.workflowName(this.workflowPlugin()?.name);
+        this.showWorkflowInSidebar(this.workflowPlugin()?.config.show);
+      } else {
+        this.configActive(true);
       }
     };
 
     this.init = async () => {
       await this.loadExistingWorkflow();
-      this.loadSteps(this.workflowPlugin()?.config.stepData);
-      this.workflowName(this.workflowPlugin()?.name);
-      this.showWorkflowInSidebar(this.workflowPlugin()?.config.show);
     };
 
     this.init();

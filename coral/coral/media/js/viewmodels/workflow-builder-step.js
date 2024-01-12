@@ -4,9 +4,10 @@ define([
   'knockout',
   'knockout-mapping',
   'arches',
+  'uuid',
   'templates/views/viewmodels/workflow-builder-step.htm',
   'viewmodels/workflow-builder-card'
-], function ($, _, ko, koMapping, arches, template, WorkflowBuilderCard) {
+], function ($, _, ko, koMapping, arches, uuid, template, WorkflowBuilderCard) {
   const WorkflowBuilderStep = function (params) {
     _.extend(this, params);
 
@@ -20,16 +21,16 @@ define([
         title: 'Card ' + (cardIndex + 1),
         componentData: cardData,
         graphId: this.graphId,
-        cardIndex: cardIndex,
+        cardId: uuid.generate(),
         parentStep: this
       });
       this.cards().push(card);
       this.cards.valueHasMutated();
     };
 
-    this.removeCardFromStep = (cardIndex) => {
+    this.removeCardFromStep = (cardId) => {
       this.cards.remove((card) => {
-        return card.cardIndex === cardIndex;
+        return card.cardId === cardId;
       });
     };
 
@@ -61,8 +62,13 @@ define([
       };
     };
 
+    this.removeStep = () => {
+      this.parentWorkflow.removeStepFromWorkflow(this.stepId);
+    };
+
     this.init = () => {
       this.loadCards(params?.cards);
+      console.log('uuid: ', uuid.generate());
     };
 
     this.init();

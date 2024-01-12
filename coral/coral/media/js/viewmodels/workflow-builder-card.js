@@ -131,7 +131,7 @@ define([
     };
 
     this.removeCard = () => {
-      this.parentStep.removeCardFromStep(this.cardIndex);
+      this.parentStep.removeCardFromStep(this.cardId);
     };
 
     this.getComponentData = () => {
