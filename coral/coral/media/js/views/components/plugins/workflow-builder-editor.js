@@ -151,6 +151,8 @@ define([
     this.init = async () => {
       await this.loadExistingWorkflow();
       this.loadSteps(this.workflowPlugin()?.config.stepData);
+      this.workflowName(this.workflowPlugin()?.name);
+      this.showWorkflowInSidebar(this.workflowPlugin()?.config.show);
     };
 
     this.init();

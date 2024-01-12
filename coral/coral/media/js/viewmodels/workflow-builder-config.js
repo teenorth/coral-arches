@@ -10,6 +10,11 @@ define([
     _.extend(this, params);
 
     this.workflowName = params?.workflowName || '';
+    this.showWorkflowInSidebar = params?.showWorkflowInSidebar || false;
+
+    this.setShowWorkflowInSidebar = (show) => {
+      this.showWorkflowInSidebar(show);
+    };
 
     this.init = () => {
       console.log('workflow-builder-config: ', params);

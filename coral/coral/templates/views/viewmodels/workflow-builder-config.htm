@@ -16,4 +16,38 @@
       </div>
     </div>
   </div>
+  <div class="row widget-wrapper">
+    <div class="form-group">
+      <div style="display: flex; flex-direction: row">
+        <div><p class="control-label widget-input-label">Show workflow in sidebar?</p></div>
+        <div></div>
+      </div>
+      <div class="col-xs-12">
+        <div style="pad-hor">
+          <label
+            data-bind="css: { 'active': showWorkflowInSidebar() === true, 'disabled': false }, click: function(e){setShowWorkflowInSidebar(true)}"
+            class="form-radio form-normal form-text"
+          >
+            <input
+              type="radio"
+              name="stat-w-label"
+              data-bind="checked: showWorkflowInSidebar() === true"
+            />
+            <span>Yes</span>
+          </label>
+          <label
+            data-bind="css: { 'active': showWorkflowInSidebar() === false, 'disabled': false }, click: function(e){setShowWorkflowInSidebar(false)}"
+            class="form-radio form-normal form-text"
+          >
+            <input
+              type="radio"
+              name="stat-w-label"
+              data-bind="checked: showWorkflowInSidebar() === false"
+            />
+            <span>No</span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
