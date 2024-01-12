@@ -9,10 +9,6 @@ define([
   const pageViewModel = function (params) {
     this.selectedResource = ko.observable();
 
-    this.selectedResource.subscribe((value) => {
-      console.log('selectedResource: ', value);
-    });
-
     this.resources = ko.observable();
     this.workflows = ko.observable();
 
