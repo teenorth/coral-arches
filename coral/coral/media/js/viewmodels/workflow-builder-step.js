@@ -15,13 +15,22 @@ define([
     this.graphId = params?.graphId;
 
     this.addCard = (cardData) => {
+      const cardIndex = this.cards().length;
       const card = new WorkflowBuilderCard({
-        title: 'Card ' + (this.cards().length + 1),
+        title: 'Card ' + (cardIndex + 1),
         componentData: cardData,
-        graphId: this.graphId
+        graphId: this.graphId,
+        cardIndex: cardIndex,
+        parentStep: this
       });
       this.cards().push(card);
       this.cards.valueHasMutated();
+    };
+
+    this.removeCardFromStep = (cardIndex) => {
+      this.cards.remove((card) => {
+        return card.cardIndex === cardIndex;
+      });
     };
 
     this.loadCards = (cards) => {

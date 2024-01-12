@@ -2,7 +2,12 @@
   <!-- ko with: card -->
   <div>
     <div class="card-component">
-      <div data-bind="text: title"></div>
+      <div style="display: flex; justify-content: space-between; align-items: center">
+        <div data-bind="text: title"></div>
+        <button class="btn btn-danger" data-bind="click: () => removeCard()">
+          <span>Remove</span>
+        </button>
+      </div>
       <div class="row widget-wrapper"></div>
       <div
         data-bind="component: {

@@ -130,6 +130,10 @@ define([
       });
     };
 
+    this.removeCard = () => {
+      this.parentStep.removeCardFromStep(this.cardIndex);
+    };
+
     this.getComponentData = () => {
       return {
         componentName: this.currentComponentData().componentName,
