@@ -297,6 +297,7 @@ class WorkflowBuilderWorkflowPlugins(View):
         data = json.loads(request.body.decode("utf-8"))
 
         plugin = models.Plugin.objects.get(pk=data["pluginid"])
+        plugin.name = data["name"]
         plugin.icon = data["icon"]
         plugin.component = data["component"]
         plugin.componentname = data["componentname"]

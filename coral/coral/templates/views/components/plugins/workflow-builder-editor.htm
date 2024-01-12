@@ -93,11 +93,7 @@
 
     <div class="tabbed-workflow-step-container">
       <!-- ko if: configActive() -->
-      <workflow-builder-config
-        params="params: {
-          workflowName: workflowName
-        }"
-      ></workflow-builder-config>
+      <workflow-builder-config params="workflowName: workflowName"></workflow-builder-config>
       <!-- /ko -->
       <!-- ko ifnot: configActive() -->
       <workflow-builder-step params="step: activeStep()"></workflow-builder-step>

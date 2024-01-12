@@ -12,14 +12,15 @@ define([
     this.workflowName = params?.workflowName || '';
 
     this.init = () => {
-      console.log('init workflow-builder-config');
+      console.log('workflow-builder-config: ', params);
     };
 
     this.init();
   };
 
   ko.components.register('workflow-builder-config', {
-    template: template
+    template: template,
+    viewModel: WorkflowBuilderConfig
   });
 
   return WorkflowBuilderConfig;

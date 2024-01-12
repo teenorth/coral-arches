@@ -9,7 +9,7 @@ define([
   'plugins/knockout-select2'
 ], function ($, ko, koMapping, arches, pageTemplate, WorkflowBuilderStep) {
   const pageViewModel = function (params) {
-    this.workflowName = ko.observable('Workflow Builder Editor');
+    this.workflowName = ko.observable('New Workflow');
     this.workflowSteps = ko.observableArray();
     this.activeStep = ko.observable();
 
@@ -18,6 +18,7 @@ define([
     this.workflowPlugin = ko.observable();
 
     this.configActive = ko.observable(false);
+    this.showWorkflowInSidebar = ko.observable(false);
 
     this.addStep = (stepData) => {
       const title = stepData?.title || `Step ${this.workflowSteps().length + 1}`;
@@ -50,20 +51,24 @@ define([
       }
     };
 
-    this.registerWorkflow = async () => {
-      const data = {
+    this.getWorkflowData = () => {
+      return {
         pluginid: this.workflowPluginId(),
-        name: 'My Custom Workflow',
+        name: this.workflowName(),
         icon: 'fa fa-check',
         component: 'views/components/plugins/workflow-builder-loader',
         componentname: 'workflow-builder-loader',
         config: {
-          show: false,
+          show: this.showWorkflowInSidebar(),
           stepData: this.workflowSteps().map((step) => step.getStepData())
         },
         slug: 'my-custom-workflow',
         sortorder: 0
       };
+    };
+
+    this.registerWorkflow = async () => {
+      const data = this.getWorkflowData();
       const workflowPlugin = await $.ajax({
         type: 'POST',
         url: '/workflow-builder/register',
@@ -90,19 +95,7 @@ define([
     };
 
     this.updateWorkflow = async () => {
-      const data = {
-        pluginid: this.workflowPluginId(),
-        name: 'My Custom Workflow',
-        icon: 'fa fa-check',
-        component: 'views/components/plugins/workflow-builder-loader',
-        componentname: 'workflow-builder-loader',
-        config: {
-          show: false,
-          stepData: this.workflowSteps().map((step) => step.getStepData())
-        },
-        slug: 'my-custom-workflow',
-        sortorder: 0
-      };
+      const data = this.getWorkflowData();
       const workflowPlugin = await $.ajax({
         type: 'PUT',
         url: '/workflow-builder/update',

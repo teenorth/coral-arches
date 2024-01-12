@@ -1,3 +1,19 @@
 <div class="card-component">
   <h4 class="card-title">Workflow Config</h4>
+  <div class="row widget-wrapper">
+    <div class="form-group">
+      <label
+        class="control-label widget-input-label"
+        for=""
+        data-bind="text: 'Workflow Name'"
+      ></label>
+      <div class="col-xs-12">
+        <input
+          type="text"
+          data-bind="textInput: $data.workflowName, attr: {placeholder: 'Please provide a name for the workflow'}"
+          class="form-control input-lg widget-input"
+        />
+      </div>
+    </div>
+  </div>
 </div>
