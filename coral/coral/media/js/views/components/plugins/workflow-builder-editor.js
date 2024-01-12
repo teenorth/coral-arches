@@ -5,6 +5,7 @@ define([
   'arches',
   'templates/views/components/plugins/workflow-builder-editor.htm',
   'viewmodels/workflow-builder-step',
+  'viewmodels/workflow-builder-config',
   'plugins/knockout-select2'
 ], function ($, ko, koMapping, arches, pageTemplate, WorkflowBuilderStep) {
   const pageViewModel = function (params) {
@@ -15,6 +16,8 @@ define([
     this.graphId = ko.observable();
 
     this.workflowPlugin = ko.observable();
+
+    this.configActive = ko.observable(false);
 
     this.addStep = (stepData) => {
       const title = stepData?.title || `Step ${this.workflowSteps().length + 1}`;
@@ -37,7 +40,14 @@ define([
     };
 
     this.switchStep = (stepIdx) => {
+      this.setConfigActive(false);
       this.activeStep(this.workflowSteps()[stepIdx]);
+    };
+
+    this.setConfigActive = (active) => {
+      if (active !== this.configActive()) {
+        this.configActive(active);
+      }
     };
 
     this.registerWorkflow = async () => {

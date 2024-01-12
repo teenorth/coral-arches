@@ -38,6 +38,20 @@
       </div>
       <div class="workflow-nav-tabs">
         <ul class="nav nav-tabs workflow-nav-tab-list">
+          <li class="workflow-nav-tab-list-item" data-bind="click: () => setConfigActive(true)">
+            <div class="workflow-nav-tab">
+              <div
+                style="
+                  display: flex;
+                  flex-direction: row;
+                  justify-content: center;
+                  align-items: center;
+                "
+              >
+                <span style="font-size: 14px">Config</span>
+              </div>
+            </div>
+          </li>
           <!--ko foreach: {data: workflowSteps(), as: 'workflowStep', noChildContext: true} -->
           <li class="workflow-nav-tab-list-item" data-bind="click: () => switchStep($index())">
             <div class="workflow-nav-tab">
@@ -49,9 +63,6 @@
                   align-items: center;
                 "
               >
-                <!-- <span style="margin-right: 4px">
-                  <i class="fa fa-plus"></i>
-                </span> -->
                 <span style="font-size: 14px" data-bind="text: workflowStep.title"></span>
               </div>
             </div>
@@ -70,7 +81,6 @@
                 <span style="margin-right: 4px">
                   <i class="fa fa-plus"></i>
                 </span>
-                <!-- <span style="font-size: 14px">Add step</span> -->
               </div>
             </div>
           </li>
@@ -82,7 +92,16 @@
     </div>
 
     <div class="tabbed-workflow-step-container">
+      <!-- ko if: configActive() -->
+      <workflow-builder-config
+        params="params: {
+          workflowName: workflowName
+        }"
+      ></workflow-builder-config>
+      <!-- /ko -->
+      <!-- ko ifnot: configActive() -->
       <workflow-builder-step params="step: activeStep()"></workflow-builder-step>
+      <!-- /ko -->
     </div>
 
     <div class="tabbed-workflow-footer">
