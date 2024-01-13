@@ -7,22 +7,21 @@
         <span>Remove</span>
       </button>
     </div>
-    <div class="row widget-wrapper">
-      <div class="form-group">
-        <label
-          class="control-label widget-input-label"
-          for=""
-          data-bind="text: 'Step Title'"
-        ></label>
-        <div class="col-xs-12">
-          <input
-            type="text"
-            data-bind="textInput: $data.title, attr: {placeholder: 'Please provide a step title'}"
-            class="form-control input-lg widget-input"
-          />
-        </div>
-      </div>
-    </div>
+    <text-widget
+      params="
+        config: {
+          label: 'Step Title',
+        },
+        value: {
+          en: {
+            value: title,
+            direction: 'ltr'
+          }
+        },
+        loading: false,
+        pageVm: $root
+      "
+    ></text-widget>
   </div>
   <div>
     <!-- ko foreach: {data: cards(), as: 'card', noChildContext: true} -->
