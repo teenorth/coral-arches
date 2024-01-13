@@ -276,9 +276,9 @@ class WorkflowBuilderWorkflowPlugins(View):
         return JSONResponse(data)
 
     def get(self, request):
-        slug = request.GET.get("slug")
-        if slug:
-            workflow = models.Plugin.objects.get(slug=slug)
+        id = request.GET.get("id")
+        if id:
+            workflow = models.Plugin.objects.get(pluginid=id)
             return JSONResponse(workflow)
         instances = None
         try:
@@ -302,6 +302,7 @@ class WorkflowBuilderWorkflowPlugins(View):
         plugin.component = data["component"]
         plugin.componentname = data["componentname"]
         plugin.config = data["config"]
+        plugin.slug = data["slug"]
 
         plugin.save()
 
@@ -321,9 +322,9 @@ class WorkflowBuilderWorkflowPlugins(View):
 
 class WorkflowBuilderPluginExport(View):
     def get(self, request):
-        slug = request.GET.get("slug")
-        plugin = models.Plugin.objects.get(slug=slug)
-        filename = f"{slug}.json"
+        id = request.GET.get("id")
+        plugin = models.Plugin.objects.get(pluginid=id)
+        filename = f"{plugin.slug}.json"
         json_data = json.dumps(
             {
                 "pluginid": str(plugin.pluginid),

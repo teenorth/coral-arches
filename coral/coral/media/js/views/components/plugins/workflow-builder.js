@@ -18,7 +18,7 @@ define([
     };
 
     this.openWorkflowBuilderWithWorkflow = (slug) => {
-      const url = `workflow-builder-editor?workflow-slug=${slug}`;
+      const url = `workflow-builder-editor?workflow-id=${slug}`;
       window.location.href = arches.urls.plugin(url);
     };
 
