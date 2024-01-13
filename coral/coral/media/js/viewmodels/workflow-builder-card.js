@@ -11,7 +11,6 @@ define([
     _.extend(this, params);
 
     this.cardHasLoaded = ko.observable(false);
-    this.title = params?.title || 'New Card';
 
     this.workflowComponentAbstract = ko.observable();
     this.isStepActive = ko.observable(false);
@@ -117,6 +116,10 @@ define([
       this.selectedHiddenNodes(this.currentComponentData().parameters.hiddenNodes);
       this.loadAbstractComponent(this.currentComponentData());
     };
+
+    this.title = ko.computed(() => {
+      return this.nodegroupOptions()[this.selectedNodegroup()]?.text || 'New Card';
+    }, this);
 
     this.loadComponentNodes = async () => {
       if (!this.currentComponentData()) return;
