@@ -10,19 +10,20 @@ define([
   'plugins/knockout-select2'
 ], function ($, ko, koMapping, arches, uuid, pageTemplate, WorkflowBuilderStep) {
   const pageViewModel = function (params) {
-    this.workflowName = ko.observable('New Workflow');
+    this.graphId = ko.observable();
+    this.workflowName = ko.observable('Basic');
+    this.showWorkflowInSidebar = ko.observable(false);
+    this.workflowSlug = ko.observable('basic-workflow');
+
     this.workflowSteps = ko.observableArray();
     this.activeStep = ko.observable();
-
-    this.graphId = ko.observable();
 
     this.workflowPlugin = ko.observable();
 
     this.configActive = ko.observable(false);
-    this.showWorkflowInSidebar = ko.observable(false);
 
     this.addStep = (stepData) => {
-      const title = stepData?.title || `Step ${this.workflowSteps().length + 1}`;
+      const title = stepData?.title || 'New Step';
       const step = new WorkflowBuilderStep({
         title: title,
         cards: stepData?.layoutSections[0].componentConfigs,
@@ -76,7 +77,7 @@ define([
           show: this.showWorkflowInSidebar(),
           stepData: this.workflowSteps().map((step) => step.getStepData())
         },
-        slug: 'my-custom-workflow',
+        slug: this.workflowSlug(),
         sortorder: 0
       };
     };
@@ -95,11 +96,11 @@ define([
 
     this.exportWorkflow = async () => {
       await this.updateWorkflow();
-      if (this.workflowSlug()) {
+      if (this.workflowId()) {
         var downloadAnchorNode = document.createElement('a');
         downloadAnchorNode.setAttribute(
           'href',
-          arches.urls.root + `workflow-builder/export?slug=${this.workflowSlug()}`
+          arches.urls.root + `workflow-builder/export?id=${this.workflowId()}`
         );
         downloadAnchorNode.setAttribute('download', `${this.workflowSlug()}.json`);
         document.body.appendChild(downloadAnchorNode); // Required for firefox
@@ -123,14 +124,14 @@ define([
       this.workflowPlugin(workflowPlugin);
     };
 
-    this.workflowSlug = ko.computed(() => {
-      if (this.workflowPlugin()?.slug) {
-        return this.workflowPlugin()?.slug;
+    this.workflowId = ko.computed(() => {
+      if (this.workflowPlugin()?.id) {
+        return this.workflowPlugin()?.id;
       }
       const searchParams = new URLSearchParams(window.location.search);
-      const workflowSlug = searchParams.get('workflow-slug');
-      if (workflowSlug) {
-        return workflowSlug;
+      const workflowId = searchParams.get('workflow-id');
+      if (workflowId) {
+        return workflowId;
       }
     }, this);
 
@@ -139,7 +140,7 @@ define([
      */
     this.graphId = ko.computed(() => {
       if (this.workflowPlugin()) {
-        return this.workflowPlugin()?.config?.stepData?.[0].layoutSections?.[0]
+        return this.workflowPlugin()?.config?.stepData?.[0]?.layoutSections?.[0]
           .componentConfigs?.[0].parameters.graphid;
       }
       const searchParams = new URLSearchParams(window.location.search);
@@ -154,21 +155,23 @@ define([
     }, this);
 
     this.loadExistingWorkflow = async () => {
-      if (this.workflowSlug()) {
+      if (this.workflowId()) {
         const workflow = await $.getJSON(
-          arches.urls.root + `workflow-builder/plugins?slug=${this.workflowSlug()}`
+          arches.urls.root + `workflow-builder/plugins?id=${this.workflowId()}`
         );
         this.workflowPlugin(workflow);
         this.loadSteps(this.workflowPlugin()?.config.stepData);
         this.workflowName(this.workflowPlugin()?.name);
         this.showWorkflowInSidebar(this.workflowPlugin()?.config.show);
-      } else {
-        this.configActive(true);
+        this.workflowSlug(this.workflowPlugin().slug);
       }
     };
 
     this.init = async () => {
       await this.loadExistingWorkflow();
+      if (!this.workflowSteps().length) {
+        this.configActive(true);
+      }
     };
 
     this.init();

@@ -3,7 +3,7 @@
   <div class="tabbed-workflow">
     <div class="tabbed-workflow-title-bar">
       <div style="display: flex; flex-direction: row">
-        <div class="workflow-name" data-bind="text: workflowName()"></div>
+        <div class="workflow-name" data-bind="text: workflowName() + ' Workflow'"></div>
       </div>
 
       <div style="display: inline-flex">
@@ -96,7 +96,8 @@
       <workflow-builder-config
         params="
           workflowName: workflowName, 
-          showWorkflowInSidebar: showWorkflowInSidebar
+          showWorkflowInSidebar: showWorkflowInSidebar,
+          workflowSlug: workflowSlug
         "
       ></workflow-builder-config>
       <!-- /ko -->

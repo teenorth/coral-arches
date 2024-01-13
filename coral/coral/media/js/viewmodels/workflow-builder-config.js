@@ -11,9 +11,28 @@ define([
 
     this.workflowName = params?.workflowName || '';
     this.showWorkflowInSidebar = params?.showWorkflowInSidebar || false;
+    this.workflowSlug = params?.workflowSlug || '';
+    this.autoGenerateSlug = ko.observable(true);
 
     this.setShowWorkflowInSidebar = (show) => {
       this.showWorkflowInSidebar(show);
+    };
+
+    this.setAutoGenerateSlug = (show) => {
+      this.autoGenerateSlug(show);
+      if (show) {
+        this.workflowSlug(this.createSlug());
+      }
+    };
+
+    this.workflowName.subscribe(() => {
+      if (this.autoGenerateSlug()) {
+        this.workflowSlug(this.createSlug());
+      }
+    });
+
+    this.createSlug = () => {
+      return this.workflowName().toLowerCase().split(' ').join('-') + '-workflow';
     };
 
     this.init = () => {
