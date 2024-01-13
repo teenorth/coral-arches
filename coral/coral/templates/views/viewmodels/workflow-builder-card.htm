@@ -3,53 +3,64 @@
   <div>
     <div class="card-component">
       <div style="display: flex; justify-content: space-between; align-items: center">
-        <div data-bind="text: title"></div>
+        <h4 class="card-title" data-bind="text: title"></h4>
         <button class="btn btn-danger" data-bind="click: () => removeCard()">
           <span>Remove</span>
         </button>
       </div>
-      <div class="row widget-wrapper"></div>
-      <div
-        data-bind="component: {
-          name: 'domain-select-widget',
-          params: {
-            node: {
-              config: {
-                options: nodegroupOptions,
-                multiple: false
-              },
-              configKeys: configKeys
+      <domain-select-widget
+        params="
+        node: {
+          config: {
+            options: nodegroupOptions,
+              multiple: false
             },
+            configKeys: configKeys
+          },
+          config: {
+            label: 'Selected Nodegroup',
+          },
+          value: selectedNodegroup,
+          loading: false,
+          form: $data,
+          pageVm: $root
+        "
+      ></domain-select-widget>
+      <domain-radio-widget
+        params="
+          node: {
             config: {
-              label: 'Selected Nodegroup',
+              options: tileManagedOptions,
             },
-            value: selectedNodegroup,
-            loading: false,
-            form: $data,
-            pageVm: $root
-          }
-      }"
-      ></div>
-      <div
-        data-bind="component: {
-          name: 'domain-radio-widget',
-          params: {  
-            node: {
-              config: {
-                options: tileManagedOptions,
-              },
-              configKeys: configKeys
-            },
+            configKeys: configKeys
+          },
+          config: {
+            label: 'Tiles Managed',
+          },
+          value: selectedTileManaged,
+          loading: false,
+          form: $data,
+          pageVm: $root
+        "
+      ></domain-radio-widget>
+      <domain-checkbox-widget
+        params="
+          node: {
             config: {
-              label: 'Tiles Managed',
+              options: hiddenNodeOptions,
             },
-            value: selectedTileManaged,
-            loading: false,
-            form: $data,
-            pageVm: $root
-          }
-      }"
-      ></div>
+            configKeys: configKeys
+          },
+          config: {
+            label: 'Hidden Nodes: This will only show nodes that are visible from the Arches Designer',
+            options: hiddenNodeOptions,
+          },
+          value: selectedHiddenNodes,
+          loading: false,
+          form: $data,
+          pageVm: $root
+        "
+      ></domain-checkbox-widget>
       <workflow-component-abstract
         params="visible: cardHasLoaded, component: workflowComponentAbstract()"
       ></workflow-component-abstract>

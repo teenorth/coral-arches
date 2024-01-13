@@ -16,9 +16,7 @@ define([
     this.graphId = params?.graphId;
 
     this.addCard = (cardData) => {
-      const cardIndex = this.cards().length;
       const card = new WorkflowBuilderCard({
-        title: 'Card ' + (cardIndex + 1),
         componentData: cardData,
         graphId: this.graphId,
         cardId: uuid.generate(),

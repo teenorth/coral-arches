@@ -11,7 +11,7 @@ define([
     _.extend(this, params);
 
     this.cardHasLoaded = ko.observable(false);
-    this.title = params?.title || 'default';
+    this.title = params?.title || 'New Card';
 
     this.workflowComponentAbstract = ko.observable();
     this.isStepActive = ko.observable(false);
@@ -30,6 +30,9 @@ define([
       { text: 'None', id: 'tile_none' }
     ]);
     this.selectedTileManaged = ko.observable('tile_one');
+
+    this.hiddenNodeOptions = ko.observableArray();
+    this.selectedHiddenNodes = ko.observableArray();
 
     this.configKeys = ko.observable({ placeholder: 0 });
 
@@ -104,21 +107,52 @@ define([
     }, this);
 
     this.loadComponent = () => {
-      if (this.currentComponentData()) {
-        this.selectedNodegroup(
-          this.nodegroupOptions().findIndex(
-            (option) => option.nodegroupid === this.currentComponentData().parameters.nodegroupid
-          )
+      if (!this.currentComponentData()) return;
+      this.selectedNodegroup(
+        this.nodegroupOptions().findIndex(
+          (option) => option.nodegroupid === this.currentComponentData().parameters.nodegroupid
+        )
+      );
+      this.selectedTileManaged('tile_' + this.currentComponentData().tilesManaged);
+      this.selectedHiddenNodes(this.currentComponentData().parameters.hiddenNodes);
+      this.loadAbstractComponent(this.currentComponentData());
+    };
+
+    this.loadComponentNodes = async () => {
+      if (!this.currentComponentData()) return;
+      const cards = await $.getJSON(arches.urls.api_card + this.graphId() + '/override');
+      const cardWidgets = cards.cardwidgets.map((widget) => {
+        return {
+          node_id: widget.node_id,
+          visible: widget.visible
+        };
+      });
+      const nodes = cards.nodes.filter((node) => {
+        const hasWidget = cardWidgets.find((widget) => {
+          return widget.visible && widget.node_id === node.nodeid;
+        });
+        return (
+          hasWidget &&
+          node.nodegroup_id === this.currentComponentData().parameters.nodegroupid &&
+          node.datatype !== 'semantic' &&
+          node.nodeid !== node.nodegroup_id
         );
-        this.selectedTileManaged('tile_' + this.currentComponentData().tilesManaged);
-        this.loadAbstractComponent(this.currentComponentData());
-      }
+      });
+      this.hiddenNodeOptions(
+        nodes.map((node) => {
+          return {
+            text: node.name,
+            id: node.nodeid
+          };
+        })
+      );
     };
 
     this.setupSubscriptions = () => {
       this.selectedTileManaged.subscribe((value) => {
         this.currentComponentData().tilesManaged = value?.replace('tile_', '');
         this.loadAbstractComponent(this.currentComponentData());
+        this.loadComponentNodes();
       });
 
       this.selectedNodegroup.subscribe((value) => {
@@ -126,6 +160,12 @@ define([
         data.parameters.resourceid = '';
         data.parameters.parenttileid = 'dummy-id';
         this.currentComponentData(data);
+        this.loadAbstractComponent(this.currentComponentData());
+        this.loadComponentNodes();
+      });
+
+      this.selectedHiddenNodes.subscribe((value) => {
+        this.currentComponentData().parameters.hiddenNodes = value;
         this.loadAbstractComponent(this.currentComponentData());
       });
     };
@@ -143,7 +183,8 @@ define([
           graphid: this.currentComponentData().parameters.graphid,
           nodegroupid: this.currentComponentData().parameters.nodegroupid,
           resourceid: this.currentComponentData().parameters.resourceid,
-          semanticName: this.currentComponentData().parameters.semanticName
+          semanticName: this.currentComponentData().parameters.semanticName,
+          hiddenNodes: this.currentComponentData().parameters.hiddenNodes
         }
       };
     };
@@ -152,6 +193,7 @@ define([
       this.currentComponentData(params?.componentData);
       await this.loadGraphComponents();
       this.loadComponent();
+      this.loadComponentNodes();
       this.setupSubscriptions();
       this.cardHasLoaded(true);
     };
