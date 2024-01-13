@@ -25,18 +25,26 @@ define([
       }
     };
 
-    this.workflowName.subscribe(() => {
+    this.workflowName.subscribe((value) => {
       if (this.autoGenerateSlug()) {
         this.workflowSlug(this.createSlug());
       }
     });
+
+    this.workflowSlug.subscribe(() => {
+      this.autoGenerateSlug(this.isAutoGenerateSlugActive());
+    });
+
+    this.isAutoGenerateSlugActive = () => {
+      return this.workflowSlug() === this.createSlug();
+    };
 
     this.createSlug = () => {
       return this.workflowName().toLowerCase().split(' ').join('-') + '-workflow';
     };
 
     this.init = () => {
-      console.log('workflow-builder-config: ', params);
+      this.autoGenerateSlug(this.isAutoGenerateSlugActive());
     };
 
     this.init();
