@@ -19,7 +19,7 @@ define([
       const card = new WorkflowBuilderCard({
         componentData: cardData,
         graphId: this.graphId,
-        cardId: uuid.generate(),
+        cardId: cardData?.uniqueInstanceName || uuid.generate(),
         parentStep: this
       });
       this.cards().push(card);
@@ -45,7 +45,7 @@ define([
     this.getStepData = () => {
       return {
         title: this.title(),
-        name: this.titleAsId(),
+        name: this.stepId,
         required: false,
         workflowstepclass: 'workflow-form-component',
         // informationboxdata: {
@@ -66,7 +66,6 @@ define([
 
     this.init = () => {
       this.loadCards(params?.cards);
-      console.log('uuid: ', uuid.generate());
     };
 
     this.init();

@@ -28,7 +28,7 @@ define([
         title: title,
         cards: stepData?.layoutSections[0].componentConfigs,
         graphId: this.graphId(),
-        stepId: uuid.generate(),
+        stepId: stepData?.name || uuid.generate(),
         parentWorkflow: this
       });
       this.workflowSteps().push(step);
@@ -136,7 +136,9 @@ define([
     }, this);
 
     /**
-     * Temporary solution to grab the graph id
+     * Temporary solution to grab the graph id.
+     * FIXME: Need to setup a way of storing multiple
+     * graph IDs
      */
     this.graphId = ko.computed(() => {
       if (this.workflowPlugin()) {
@@ -153,6 +155,33 @@ define([
     this.workflowPluginId = ko.computed(() => {
       return this.workflowPlugin()?.pluginid || '';
     }, this);
+
+    this.workflowResourceIdPathOptions = ko.computed(() => {
+      const resourceIdPaths = [];
+      resourceIdPaths.push({
+        text: 'None',
+        id: resourceIdPaths.length,
+        resourceIdPath: '',
+        tileIdPath: '',
+        stepIndex: null,
+        cardIndex: null
+      });
+      this.workflowSteps().forEach((step) => {
+        step.cards().forEach((card) => {
+          if (card.currentComponentData()) {
+            const pathData = {
+              text: step.title(),
+              id: resourceIdPaths.length
+            };
+            pathData.text += ` > ${card.title()}`;
+            pathData.resourceIdPath = `['${step.stepId}']['${card.cardId}'][0]['resourceid']['resourceInstanceId']`;
+            pathData.tileIdPath += `['${step.stepId}']['${card.cardId}'][0]['tileId']`;
+            resourceIdPaths.push(pathData);
+          }
+        });
+      });
+      return resourceIdPaths;
+    });
 
     this.loadExistingWorkflow = async () => {
       if (this.workflowId()) {
@@ -172,6 +201,7 @@ define([
       if (!this.workflowSteps().length) {
         this.configActive(true);
       }
+      this.workflowResourceIdPathOptions();
     };
 
     this.init();

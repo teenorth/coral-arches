@@ -33,6 +33,8 @@ define([
     this.hiddenNodeOptions = ko.observableArray();
     this.selectedHiddenNodes = ko.observableArray();
 
+    this.selectedResourceIdPath = ko.observable();
+
     this.configKeys = ko.observable({ placeholder: 0 });
 
     this.loadGraphComponents = async () => {
@@ -114,6 +116,10 @@ define([
       );
       this.selectedTileManaged('tile_' + this.currentComponentData().tilesManaged);
       this.selectedHiddenNodes(this.currentComponentData().parameters.hiddenNodes);
+      const resourceIdPathIdx = this.workflowResourceIdPathOptions().findIndex(
+        (option) => option.resourceIdPath === this.currentComponentData().parameters.resourceid
+      );
+      this.selectedResourceIdPath(resourceIdPathIdx !== -1 ? resourceIdPathIdx : 0);
       this.loadAbstractComponent(this.currentComponentData());
     };
 
@@ -162,6 +168,11 @@ define([
         const data = JSON.parse(JSON.stringify(this.components()[value]));
         data.parameters.resourceid = '';
         data.parameters.parenttileid = 'dummy-id';
+        /**
+         * Using a UUID here but it would be better to have
+         * a readable name.
+         */
+        data.uniqueInstanceName = this.cardId;
         this.currentComponentData(data);
         this.loadAbstractComponent(this.currentComponentData());
         this.loadComponentNodes();
@@ -177,6 +188,10 @@ define([
       this.parentStep.removeCardFromStep(this.cardId);
     };
 
+    this.workflowResourceIdPathOptions = ko.computed(() => {
+      return this.parentStep.parentWorkflow.workflowResourceIdPathOptions();
+    });
+
     this.getComponentData = () => {
       return {
         componentName: this.currentComponentData().componentName,
@@ -185,7 +200,8 @@ define([
         parameters: {
           graphid: this.currentComponentData().parameters.graphid,
           nodegroupid: this.currentComponentData().parameters.nodegroupid,
-          resourceid: this.currentComponentData().parameters.resourceid,
+          resourceid:
+            this.workflowResourceIdPathOptions()[this.selectedResourceIdPath()]?.resourceIdPath,
           semanticName: this.currentComponentData().parameters.semanticName,
           hiddenNodes: this.currentComponentData().parameters.hiddenNodes
         }

@@ -22,10 +22,41 @@
           },
           value: selectedNodegroup,
           loading: false,
-          form: $data,
           pageVm: $root
         "
       ></domain-select-widget>
+      <domain-select-widget
+        params="
+          node: {
+            config: {
+              options: workflowResourceIdPathOptions,
+              multiple: false
+            },
+            configKeys: configKeys
+          },
+          config: {
+            label: 'Selected resource ID path',
+          },
+          value: selectedResourceIdPath,
+          loading: false,
+          pageVm: $root
+        "
+      ></domain-select-widget>
+      <div class="row widget-wrapper">
+        <div class="form-group">
+          <label
+            class="control-label widget-input-label"
+            data-bind="text: 'Unique card identifier'"
+          ></label>
+          <div class="col-xs-12">
+            <input
+              type="text"
+              data-bind="textInput: cardId, attr: {placeholder: 'Please provide a name for the workflow', disabled: true}"
+              class="form-control input-lg widget-input"
+            />
+          </div>
+        </div>
+      </div>
       <domain-radio-widget
         params="
           node: {
@@ -39,7 +70,6 @@
           },
           value: selectedTileManaged,
           loading: false,
-          form: $data,
           pageVm: $root
         "
       ></domain-radio-widget>
@@ -57,7 +87,6 @@
           },
           value: selectedHiddenNodes,
           loading: false,
-          form: $data,
           pageVm: $root
         "
       ></domain-checkbox-widget>
