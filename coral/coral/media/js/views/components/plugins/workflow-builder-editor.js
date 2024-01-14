@@ -143,7 +143,7 @@ define([
     this.graphId = ko.computed(() => {
       if (this.workflowPlugin()) {
         return this.workflowPlugin()?.config?.stepData?.[0]?.layoutSections?.[0]
-          .componentConfigs?.[0].parameters.graphid;
+          .componentConfigs?.[0]?.parameters.graphid;
       }
       const searchParams = new URLSearchParams(window.location.search);
       const graphId = searchParams.get('graph-id');
@@ -162,9 +162,7 @@ define([
         text: 'None',
         id: resourceIdPaths.length,
         resourceIdPath: '',
-        tileIdPath: '',
-        stepIndex: null,
-        cardIndex: null
+        tileIdPath: ''
       });
       this.workflowSteps().forEach((step) => {
         step.cards().forEach((card) => {
