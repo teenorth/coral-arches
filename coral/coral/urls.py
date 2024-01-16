@@ -11,6 +11,7 @@ from arches.app.views import main
 from arches.app.views.user import UserManagerView
 from coral.views.monument_remapping import MonumentRemapping
 from coral.views.graph_component_export import GraphComponentExport
+from coral.views.workflow_builder import WorkflowBuilder, WorkflowBuilderGraphComponents, WorkflowBuilderCardOverride, WorkflowBuilderWorkflowPlugins, WorkflowBuilderPluginExport
 
 
 uuid_regex = settings.UUID_REGEX
@@ -38,6 +39,13 @@ urlpatterns = [
     url(r'^'+settings.APP_PATHNAME+'/plugins/init-workflow', PluginView.as_view(), name='init-workflow'),
     url(r'^monument_remapping', MonumentRemapping.as_view(), name="monument_remapping"),
     url(r'^graph-component-export', GraphComponentExport.as_view(), name='graph-mapping-dump'),
+    url(r'^workflow-builder/resources', WorkflowBuilder.as_view(), name='wb_resources'),
+    url(r'^workflow-builder/graph-components', WorkflowBuilderGraphComponents.as_view(), name='wb_graph_components'),
+    url(r"^cards/(?P<resourceid>%s|())/override$" % uuid_regex, WorkflowBuilderCardOverride.as_view(), name="api_card_override"),
+    url(r"^workflow-builder/register", WorkflowBuilderWorkflowPlugins.as_view(), name="wb_register"),
+    url(r"^workflow-builder/plugins", WorkflowBuilderWorkflowPlugins.as_view(), name="wb_plugins"),
+    url(r"^workflow-builder/export", WorkflowBuilderPluginExport.as_view(), name="wb_export_plugin"),
+    url(r"^workflow-builder/update", WorkflowBuilderWorkflowPlugins.as_view(), name="wb_update"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # if settings.SHOW_LANGUAGE_SWITCH is True:
