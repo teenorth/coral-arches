@@ -241,7 +241,7 @@ define([
       const index = this.workflowResourceIdPathOptions().findIndex((path) => {
         return (
           path.resourceIdPath?.includes(this.cardId) &&
-          path.resourceIdPath?.includes(this.parentStep.stepId)
+          path.resourceIdPath?.includes(this.parentStep.stepName())
         );
       });
       return index == 1;
@@ -258,6 +258,7 @@ define([
       ) {
         return currentComponentName;
       }
+      console.log('this.isInitialStep(): ', this.isInitialStep());
       return this.isInitialStep()
         ? WORKFLOW_BUILDER_INITIAL_STEP_COMPONENT
         : DEFAULT_CARD_UTIL_COMPONENT;

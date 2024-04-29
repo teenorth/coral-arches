@@ -38,6 +38,7 @@ define([
           nodegroupId: self.tile().nodegroup_id,
           ...self.parentTiles()
         });
+        console.log('params.form.savedData: ', params.form.savedData());
         params.form.complete(true);
         params.form.saving(false);
       } else {

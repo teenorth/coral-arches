@@ -240,9 +240,11 @@ define([
               id: resourceIdPaths.length
             };
             pathData.text += ` > ${card.title()}`;
-            pathData.resourceIdPath = `['${step.stepId}']['${card.cardId}'][0]['resourceid']['resourceInstanceId']`;
-            pathData.tileIdPath = `['${step.stepId}']['${card.cardId}'][0]['tileId']`;
-            pathData.basePath = `['${step.stepId}']['${card.cardId}'][0]['resourceid']`;
+            pathData.resourceIdPath = `['${step.stepName()}']['${
+              card.cardId
+            }'][0]['resourceid']['resourceInstanceId']`;
+            pathData.tileIdPath = `['${step.stepName()}']['${card.cardId}'][0]['tileId']`;
+            pathData.basePath = `['${step.stepName()}']['${card.cardId}'][0]['resourceid']`;
             resourceIdPaths.push(pathData);
           }
         });
